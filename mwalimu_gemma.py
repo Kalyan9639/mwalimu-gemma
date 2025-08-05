@@ -44,7 +44,7 @@ except Exception as e:
     exit()
 
 
-# --- ⭐️ DATABASE SETUP: CORRECTED FOR CHROMA CLOUD ⭐️ ---
+# --- ⭐️ DATABASE SETUP: CORRECTED FOR CHROMA CLOUD (OFFICIAL METHOD) ⭐️ ---
 try:
     # Load Chroma Cloud credentials from the .env file
     CHROMA_API_KEY = os.getenv("CHROMA_API_KEY")
@@ -63,8 +63,8 @@ try:
     )
     print("[INFO] Successfully connected to ChromaDB Cloud.")
 
-    # The LangChain Chroma wrapper now uses the CloudClient.
-    # We are NO LONGER using `persist_directory`.
+    # The LangChain Chroma wrapper now uses the correctly initialized CloudClient.
+    # This is the proper way to connect, replacing the old `persist_directory` method.
     user_vector_store = Chroma(
         client=client,
         collection_name="user_profiles",
@@ -76,7 +76,7 @@ try:
         embedding_function=embeddings,
     )
 except Exception as e:
-    print(f"[FATAL ERROR] Could not connect to ChromaDB Cloud. Error: {e}")
+    print(f"[FATAL ERROR] Could not connect to ChromaDB Cloud. Check credentials. Error: {e}")
     exit()
 
 
@@ -246,3 +246,4 @@ def chat_with_mwalimu(request: ChatRequest):
     resource_generator = ResourceGenerationAgent(current_topics)
     response_text = orchestrator.handle_chat(request.prompt, resource_generator)
     return {"response": response_text}
+
